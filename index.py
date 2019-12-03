@@ -5,7 +5,7 @@ import shutil
 from flask import Flask, jsonify, request, render_template, make_response
 from flask_cors import CORS
 import pdfkit
-# from utils.sftp import *
+from utils.pdfkits import *
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
@@ -34,37 +34,37 @@ def pdf():
     if request.method == 'POST':
         if request.json is not None:
             if is_json(request.json):
-                auth = request.json.get('auth')
+                obj = request.json
 
-    auth = {}
-    auth['flag'] = 'file'
-    auth['data'] = 'https://codeday.me/jp/qa/20190916/1591973.html'
-    options = {
-        'page-size': 'A4',
-        'margin-top': '0.1in',
-        'margin-right': '0.1in',
-        'margin-bottom': '0.1in',
-        'margin-left': '0.1in',
-        'encoding': "utf-8",
-        'no-outline': None,
-        'disable-smart-shrinking': '',
-    }
+    obj = {}
+    obj['flag'] = 'file'
+    # obj['filename'] = 'apache.pdf'
+    # obj['data'] = 'https://www.google.co.jp/'
+    html = {}
+    html['filename'] = 'index.html'
+    html['data'] = 'PCFET0NUWVBFIGh0bWw+CjxodG1sPgogIDxoZWFkPgogICAgPG1ldGEgY2hhcnNldD0idXRmLTgiPgogICAgPHRpdGxlPlNDIEZpbGUgQVBJIHYwLjEuMDwvdGl0bGU+CiAgICA8bGluayByZWw9InN0eWxlc2hlZXQiIHR5cGU9InRleHQvY3NzIiBocmVmPSJpbmRleC5jc3MiPgogIDwvaGVhZD4KPGJvZHk+CjxkaXYgY2xhc3M9ImNhcmQiPgogICAgRmlsZSBBUEkg5pel5pys6KqeCjwvZGl2Pgo8L2JvZHk+CjwvaHRtbD4='
+    print(html)
+    css = {}
+    css['filename'] = 'style.css'
+    css['data'] = 'ZGl2IHsKICAgIGNvbG9yOmJsdWU7CiAgICBsaW5lLWhlaWdodDoxLjU7Cn0='
+    print(css)
+    obj['data'] = { 'html': html, 'css': css }
+    result = get_pdf(obj)
 
-    dir = './dowload'
-    filename = 'apache.pdf'
-    fullpath = dir + '/ '+ 'apache.pdf'
-    if auth['flag'] == 'url':
-        pdfkit.from_url('https://google.com', fullpath, options=options)
-    elif auth['flag'] == 'file':
-        pdfkit.from_file('html/index.html', fullpath, css='html/style.css', options=options)
+    if result is not None:
+        response = make_response()
+        filename = result['filename']
+        fullpath = result['path'] + '/' + filename
+        response.data = open(fullpath, 'rb').read()
+        response.headers['Content-Disposition'] = "attachment; filename=" + filename
+        response.mimetype = 'application/pdf'
+
+        delete_dir(result['path'])
+        return response
     else:
-        pdfkit.from_string('<html><body><h1>It works!</h1></body></html>', fullpath, options=options)
-
-    response = make_response()
-    response.data = open(fullpath, 'rb').read()
-    response.headers['Content-Disposition'] = "attachment; filename=" + filename
-    response.mimetype = 'application/pdf'
-    return response
+        if result is None:
+            result = { 'msg': 'Json Data is error !!!' }
+        return jsonify(result), 200
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=8084)
