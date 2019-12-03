@@ -5,6 +5,7 @@ import shutil
 from flask import Flask, jsonify, request, render_template, make_response
 from flask_cors import CORS
 import pdfkit
+from utils.utils import is_exist
 from utils.files import *
 from utils.pdfkits import *
 
@@ -44,7 +45,7 @@ def pdf():
     # options['orientation'] = 'Portrait'
     # obj['options'] = options
     result = get_pdf(obj)
-    if result is not None:
+    if result is not None and is_exist(result, 'msg') == False:
         response = make_response()
         filename = result['filename']
         fullpath = result['path'] + '/' + filename
