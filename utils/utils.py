@@ -27,6 +27,12 @@ def is_json(obj):
         print('JSONDecodeError: ', e)
     return (keys is not None and len(keys) > 0)
 
+def is_type(obj, istype):
+    if is_empty(obj):
+        return None
+    val = str(type(obj)).replace("<class '", "").replace("'>", "")
+    return (val == istype) # 'str', 'int', 'list', 'bool'
+
 def delete_dir(path):
     if path is not None and os.path.isdir(path):
         shutil.rmtree(path)

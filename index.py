@@ -32,7 +32,6 @@ def pdf():
     authorization = request.authorization
     # print(authorization)
 
-    # options = {}
     obj = {}
     if request.method == 'POST':
         if request.json is not None:
@@ -41,22 +40,7 @@ def pdf():
         else:
             obj = get_forms(request)
 
-    # obj['flag'] = 'file'
-    # # obj['filename'] = 'apache.pdf'
-    # # obj['data'] = 'https://www.google.co.jp/'
-    # html = {}
-    # html['filename'] = 'index.html'
-    # html['data'] = 'PCFET0NUWVBFIGh0bWw+CjxodG1sPgogIDxoZWFkPgogICAgPG1ldGEgY2hhcnNldD0idXRmLTgiPgogICAgPHRpdGxlPlNDIEZpbGUgQVBJIHYwLjEuMDwvdGl0bGU+CiAgICA8bGluayByZWw9InN0eWxlc2hlZXQiIHR5cGU9InRleHQvY3NzIiBocmVmPSJpbmRleC5jc3MiPgogICAgPGxpbmsgcmVsPSJzdHlsZXNoZWV0IiB0eXBlPSJ0ZXh0L2NzcyIgaHJlZj0ic3R5bGUuY3NzIj4KICA8L2hlYWQ+Cjxib2R5Pgo8ZGl2IGNsYXNzPSJjYXJkIj4KICAgIEZpbGUgQVBJIOaXpeacrOiqngo8L2Rpdj4KPGRpdiBjbGFzcz0iYm94Ij4KICBGaWxlIEFQSSDml6XmnKzoqp4gMDIKPC9kaXY+CjwvYm9keT4KPC9odG1sPg=='
-    # css = {}
-    # css['filename'] = 'index.css'
-    # css['data'] = 'ZGl2LmJveCB7CiAgICBiYWNrZ3JvdW5kOnJlZDsKICAgIGxpbmUtaGVpZ2h0OjEuNTsKfQ=='
-    # css1 = {}
-    # css1['filename'] = 'style.css'
-    # css1['data'] = 'ZGl2IHsKICAgIGNvbG9yOmJsdWU7CiAgICBsaW5lLWhlaWdodDoxLjU7Cn0='
-    # obj['data'] = [ html, css, css1 ]
     result = get_pdf(obj)
-    print(result)
-
     if result is not None:
         response = make_response()
         filename = result['filename']

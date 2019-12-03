@@ -6,7 +6,6 @@ from .dates import *
 from .files import *
 
 def get_pdf(obj):
-    options = default_options(obj)
     if is_exist(obj, 'data') == False or is_empty(obj['data']):
         return None
 
@@ -16,7 +15,7 @@ def get_pdf(obj):
 
     data = obj['data']
     outdir = get_dir('download/')
-    if data is not None and os.path.isdir(data[0]['data']):
+    if data is not None and is_type(data, 'list') == True and is_empty(data[0]['data']) == False and os.path.isdir(data[0]['data']):
         outdir = data[0]['data']
     if os.path.isdir(outdir) == False:
         os.mkdir(outdir)
@@ -28,6 +27,7 @@ def get_pdf(obj):
         filename = get_dir(None) + '_sc.pdf'
 
     result = {}
+    options = default_options(obj)
     try:
         outpath = os.path.join(outdir, filename)
         if flag == 'url':
@@ -70,17 +70,28 @@ def get_pdf(obj):
     return result
 
 def default_options(obj):
+    created = get_datetime(None, None)
     opts = {
-        'page-size': 'A4',
-        'orientation': 'Portrait', #'Landscape'
-        'margin-top': '0.1in',
-        'margin-right': '0.1in',
-        'margin-bottom': '0.1in',
-        'margin-left': '0.1in',
-        'encoding': "utf-8",
-        'no-outline': None,
-        'disable-smart-shrinking': '',
-        'user-style-sheet': True
+        'header-left': 'SC PDF API v0.1.0'
+        # ,'header-center': 'AAA'
+        ,'header-right': '[page] / [topage]'
+        ,'footer-left': 'Copyright © 2020 SC Systems Inc. All Rights Reserved.'
+        # ,'footer-center': 'Wellcome to SC Systems!!!'
+        ,'footer-right': created
+        ,'header-spacing': 3
+        ,'footer-spacing': 3
+        ,'password': 'abcd'
+        ,'page-size': 'A4'
+        ,'dpi': 400
+        ,'orientation': 'Landscape' #'Portrait'
+        ,'margin-top': '0.4in'
+        ,'margin-left': '0.1in'
+        ,'margin-right': '0.1in'
+        ,'margin-bottom': '0.4in'
+        ,'encoding': "utf-8"
+        ,'no-outline': None
+        ,'disable-smart-shrinking': ''
+        ,'user-style-sheet': True
     }
     if is_exist(obj, 'options') == False or is_json(obj['options']) == False:
         return opts
