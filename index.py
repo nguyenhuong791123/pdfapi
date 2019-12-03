@@ -40,6 +40,9 @@ def pdf():
         else:
             obj = get_forms(request)
 
+    # options = {}
+    # options['orientation'] = 'Portrait'
+    # obj['options'] = options
     result = get_pdf(obj)
     if result is not None:
         response = make_response()
